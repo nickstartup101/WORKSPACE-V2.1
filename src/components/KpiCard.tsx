@@ -1,6 +1,4 @@
 import React from 'react';
-import { Info } from 'lucide-[#001f3f]';
-import { LucideIcon } from 'lucide-react';
 
 interface KpiCardProps {
   title: string;
