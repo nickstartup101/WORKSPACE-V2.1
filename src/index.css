@@ -1,0 +1,10 @@
+@tailwindcss base;
+@tailwindcss components;
+@tailwindcss utilities;
+
+body {
+  margin: 0;
+  font-family: 'Noto Sans Lao', 'Inter', sans-serif;
+  background-color: #f4faff;
+  color: #001f2a;
+}
