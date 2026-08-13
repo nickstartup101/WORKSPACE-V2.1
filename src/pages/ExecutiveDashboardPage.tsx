@@ -17,7 +17,6 @@ export const ExecutiveDashboardPage: React.FC = () => {
 
   return (
     <div className="ml-[260px] flex-1 flex flex-col min-h-screen bg-[#F8FAFC]">
-      <!-- Header -->
       <header className="bg-white/80 backdrop-blur-xl top-0 sticky z-40 border-b border-[#C4C6CF]/20 px-10 py-5 flex justify-between items-center">
         <div>
           <h2 className="text-[22px] font-bold text-[#001F2A]">
@@ -26,7 +25,6 @@ export const ExecutiveDashboardPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <!-- Branch Selector -->
           <select
             value={activeBranchId}
             onChange={(e) => setActiveBranchId(e.target.value)}
@@ -38,7 +36,6 @@ export const ExecutiveDashboardPage: React.FC = () => {
             <option value="airport">Airport Lounge</option>
           </select>
 
-          <!-- Language Selector -->
           <div className="flex items-center bg-white border border-[#C4C6CF]/40 rounded-full p-1 shadow-sm text-[12px] font-bold">
             <button onClick={() => setLang('lo')} className={`px-3 py-1 rounded-full ${lang === 'lo' ? 'bg-[#001F3F] text-white' : 'text-[#5C5F60]'}`}>ລາວ</button>
             <button onClick={() => setLang('th')} className={`px-3 py-1 rounded-full ${lang === 'th' ? 'bg-[#001F3F] text-white' : 'text-[#5C5F60]'}`}>ไทย</button>
@@ -47,9 +44,7 @@ export const ExecutiveDashboardPage: React.FC = () => {
         </div>
       </header>
 
-      <!-- Main Canvas -->
       <main className="p-10 space-y-8 max-w-[1600px] mx-auto w-full">
-        <!-- Top 4 KPI Grid -->
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <KpiCard
             title={t('totalRevenue', lang)}
@@ -81,9 +76,7 @@ export const ExecutiveDashboardPage: React.FC = () => {
           />
         </div>
 
-        <!-- Analytical Section -->
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Financial Chart -->
           <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-[#C4C6CF]/30 shadow-sm flex flex-col justify-between min-h-[420px]">
             <div className="flex justify-between items-center mb-6">
               <div>
@@ -92,7 +85,6 @@ export const ExecutiveDashboardPage: React.FC = () => {
               </div>
             </div>
 
-            <!-- SVG Chart -->
             <div className="relative w-full h-[260px] flex items-end">
               <svg className="w-full h-full" viewBox="0 0 600 240">
                 <path d="M 20,180 Q 130,120 230,150 T 440,70 T 580,40" fill="none" stroke="#001f3f" strokeWidth="4" />
@@ -105,7 +97,6 @@ export const ExecutiveDashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <!-- Accounts Payable Status -->
           <div className="bg-white rounded-3xl p-8 border border-[#C4C6CF]/30 shadow-sm flex flex-col justify-between">
             <div>
               <h3 className="text-[18px] font-bold text-[#001F2A] mb-1">{t('accountsPayable', lang)}</h3>
@@ -141,7 +132,6 @@ export const ExecutiveDashboardPage: React.FC = () => {
         </div>
       </main>
 
-      <!-- KPI Explanation Modal -->
       {activeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-[#C4C6CF]/20">
