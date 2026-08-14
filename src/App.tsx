@@ -19,7 +19,7 @@ const MainRouter: React.FC = () => {
       default:
         return (
           <div className="ml-[260px] flex-1 min-h-screen bg-[#F8FAFC] p-10 flex items-center justify-center">
-            <div className="text-center bg-white p-12 rounded-3xl border border-gray-200 max-w-lg">
+            <div className="text-center bg-white p-12 rounded-3xl border border-gray-200 max-w-lg shadow-sm">
               <span className="material-symbols-outlined text-[64px] text-[#001F3F]">construction</span>
               <h3 className="text-[20px] font-bold text-[#001F2A] mt-4">ຟັງຊັ່ນນີ້ກຳລັງດຶງຂໍ້ມູນຈາກ Firebase</h3>
               <p className="text-[13px] text-gray-500 mt-2">ຂໍ້ມູນຈິງໃນ Collection ນີ້ກຳລັງຖືກ Map ເຂົ້າສູ່ລະບົບ V2</p>
@@ -30,9 +30,11 @@ const MainRouter: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex min-h-screen w-full bg-[#F8FAFC] overflow-x-hidden">
       <Sidebar />
-      {renderPage()}
+      <div className="flex-1 w-full min-h-screen">
+        {renderPage()}
+      </div>
     </div>
   );
 };
