@@ -4,9 +4,6 @@ import { Sidebar } from './components/Sidebar';
 import { ExecutiveDashboardPage } from './pages/ExecutiveDashboardPage';
 import { SalesPage } from './pages/SalesPage';
 import { InventoryPage } from './pages/InventoryPage';
-import { SuppliersPage } from './pages/SuppliersPage';
-import { AccountsPayablePage } from './pages/AccountsPayablePage';
-import { FinancialReportsPage } from './pages/FinancialReportsPage';
 
 const MainRouter: React.FC = () => {
   const { activePage } = useAuth();
@@ -19,13 +16,6 @@ const MainRouter: React.FC = () => {
         return <SalesPage />;
       case 'inventory':
         return <InventoryPage />;
-      case 'suppliers':
-        return <SuppliersPage />;
-      case 'accountsPayable':
-        return <AccountsPayablePage />;
-      case 'reports':
-      case 'financials':
-        return <FinancialReportsPage />;
       default:
         return <ExecutiveDashboardPage />;
     }
