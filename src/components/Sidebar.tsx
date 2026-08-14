@@ -19,10 +19,8 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="h-screen w-[260px] fixed left-0 top-0 bottom-0 bg-[#001f3f] z-50 flex flex-col justify-between py-6 shadow-2xl overflow-hidden select-none">
-      {/* Upper Navigation Section */}
+    <aside className="fixed inset-y-0 left-0 w-[260px] h-full bg-[#001f3f] z-50 flex flex-col justify-between py-6 shadow-2xl select-none">
       <div className="flex-1 flex flex-col min-h-0">
-        {/* Brand Header */}
         <div 
           className="px-6 mb-8 flex items-center gap-3 cursor-pointer shrink-0" 
           onClick={() => setActivePage('dashboard')}
@@ -39,8 +37,7 @@ export const Sidebar: React.FC = () => {
           <p className="text-[10px] uppercase tracking-[0.15em] font-bold text-white/60">Franchise Mgt</p>
         </div>
 
-        {/* Inner Scrollable Menu */}
-        <nav className="flex-1 overflow-y-auto space-y-1.5 px-4 scrollbar-hide pr-2">
+        <nav className="flex-1 overflow-y-auto space-y-1.5 px-4 scrollbar-hide">
           {navItems.map((item) => {
             const isActive = activePage === item.module;
 
@@ -62,7 +59,6 @@ export const Sidebar: React.FC = () => {
         </nav>
       </div>
 
-      {/* Bottom Organization Badge (Fixed at Bottom) */}
       <div className="px-6 pt-4 border-t border-white/10 shrink-0">
         <div className="bg-white/5 rounded-2xl p-3 flex items-center gap-3 border border-white/10">
           <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center text-white font-bold text-[12px] shrink-0">
