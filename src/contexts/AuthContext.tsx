@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../firebase/config';
-import { UserProfile, UserRole, Language, ModuleName, ActionType } from '../types';
+import { UserProfile, Language, ModuleName, ActionType } from '../types';
 
 interface AuthContextType {
   user: User | null;
@@ -11,6 +11,8 @@ interface AuthContextType {
   setLang: (lang: Language) => void;
   activeBranchId: string;
   setActiveBranchId: (id: string) => void;
+  activePage: ModuleName;
+  setActivePage: (page: ModuleName) => void;
   hasPermission: (module: ModuleName, action: ActionType) => boolean;
   logout: () => Promise<void>;
 }
@@ -22,13 +24,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState<Language>('lo');
   const [activeBranchId, setActiveBranchId] = useState<string>('all');
+  const [activePage, setActivePage] = useState<ModuleName>('dashboard');
 
-  const [profile, setProfile] = useState<UserProfile | null>({
-    uid: 'demo-user',
+  const [profile] = useState<UserProfile>({
+    uid: 'executive-user',
     email: 'executive@ladolce.com',
     displayName: 'Executive User',
     role: 'SUPER_ADMIN',
-    organizationId: 'la-dolce-org',
+    organizationId: 'la-dolce',
     allowedBranchIds: ['hq', 'riverside', 'airport'],
     activeBranchId: 'all',
     status: 'active',
@@ -42,16 +45,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, []);
 
-  const hasPermission = (module: ModuleName, action: ActionType): boolean => {
-    if (!profile) return false;
-    if (profile.role === 'SUPER_ADMIN' || profile.role === 'ADMIN') return true;
-    if (profile.role === 'VIEWER' && action !== 'view') return false;
-    
-    // Module specific RBAC checks
-    if (profile.role === 'FINANCE' && ['financials', 'accountsPayable', 'reports', 'roi'].includes(module)) return true;
-    if (profile.role === 'INVENTORY' && ['inventory', 'procurement'].includes(module)) return true;
-    
-    return action === 'view';
+  const hasPermission = (_module: ModuleName, _action: ActionType): boolean => {
+    return true; // Full access for executive V2 engine
   };
 
   const logout = async () => {
@@ -68,6 +63,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLang,
         activeBranchId,
         setActiveBranchId,
+        activePage,
+        setActivePage,
         hasPermission,
         logout,
       }}
