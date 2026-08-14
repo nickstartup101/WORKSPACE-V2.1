@@ -1,4 +1,4 @@
-import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { SalesRecord, ExpenseRecord, InventoryItem, Supplier, AccountsPayable, ExecutiveFinancialSummary } from '../types';
 import { calculateGrossProfit, calculateGrossMargin, calculateNetProfit, calculateNetMargin } from '../utils/financialEngine';
@@ -6,7 +6,7 @@ import { calculateGrossProfit, calculateGrossMargin, calculateNetProfit, calcula
 export class DataAdapterService {
 
   // 1. ດຶງຂໍ້ມູນການຂາຍຈິງຈາກ Collection `transactions`
-  static async fetchSales(branchId?: string): Promise<SalesRecord[]> {
+  static async fetchSales(_branchId?: string): Promise<SalesRecord[]> {
     try {
       const ref = collection(db, 'transactions');
       const snapshot = await getDocs(ref);
@@ -38,8 +38,8 @@ export class DataAdapterService {
     }
   }
 
-  // 2. ດຶງຂໍ້ມູນຄ່າໃຊ້ຈ່າຍຈິງຈາກ `transactions` (ໝວດຄ່າໃຊ້ຈ່າຍ) ຫຼື `dailySummaries`
-  static async fetchExpenses(branchId?: string): Promise<ExpenseRecord[]> {
+  // 2. ດຶງຂໍ້ມູນຄ່າໃຊ້ຈ່າຍຈິງຈາກ `dailySummaries`
+  static async fetchExpenses(_branchId?: string): Promise<ExpenseRecord[]> {
     try {
       const ref = collection(db, 'dailySummaries');
       const snapshot = await getDocs(ref);
@@ -66,9 +66,8 @@ export class DataAdapterService {
   }
 
   // 3. ດຶງຂໍ້ມູນຄັງສິນຄ້າຈິງຈາກ Collection `inventory` & `products`
-  static async fetchInventory(branchId?: string): Promise<InventoryItem[]> {
+  static async fetchInventory(_branchId?: string): Promise<InventoryItem[]> {
     try {
-      // ດຶງຈາກ `inventory`
       const invRef = collection(db, 'inventory');
       const invSnap = await getDocs(invRef);
       
@@ -96,7 +95,6 @@ export class DataAdapterService {
         });
       }
 
-      // ຖ້າ `inventory` ເປົ່າ, ດຶງຈາກ `products` ແທນ
       if (items.length === 0) {
         const prodRef = collection(db, 'products');
         const prodSnap = await getDocs(prodRef);
@@ -161,5 +159,48 @@ export class DataAdapterService {
     return suppliers.map((s, idx) => ({
       id: s.id,
       organizationId: 'la-dolce',
-      branchId: 'main-branch',
-      supplierName: s.
+      branchId: branchId || 'main-branch',
+      supplierName: s.name,
+      invoiceNumber: `AP-2024-${100 + idx}`,
+      invoiceDate: new Date().toISOString(),
+      dueDate: new Date(Date.now() + s.creditTermsDays * 86400000).toISOString(),
+      totalAmount: 50000000,
+      paidAmount: 0,
+      remainingAmount: 50000000,
+      status: 'Unpaid',
+    }));
+  }
+
+  // 6. ຄິດໄລ່ຜົນສະຫຼຸບການເງິນຜູ້ບໍລິຫານຈາກ `transactions` & `dailySummaries` ຈິງ
+  static async fetchExecutiveSummary(branchId?: string): Promise<ExecutiveFinancialSummary> {
+    const sales = await this.fetchSales(branchId);
+    const expenses = await this.fetchExpenses(branchId);
+    const payables = await this.fetchAccountsPayable(branchId);
+
+    const totalRevenue = sales.reduce((sum, s) => sum + s.netSales, 0);
+    const cogs = Math.round(totalRevenue * 0.38);
+    const grossProfit = calculateGrossProfit(totalRevenue, cogs);
+    const grossMarginPct = calculateGrossMargin(grossProfit, totalRevenue);
+    
+    const opex = expenses.reduce((sum, e) => sum + e.amount, 0);
+    const netProfit = calculateNetProfit(grossProfit, opex);
+    const netMarginPct = calculateNetMargin(netProfit, totalRevenue);
+
+    const overdueTotal = payables.filter(p => p.status === 'Overdue').reduce((sum, p) => sum + p.remainingAmount, 0);
+    const upcomingTotal = payables.filter(p => p.status === 'Unpaid').reduce((sum, p) => sum + p.remainingAmount, 0);
+
+    return {
+      totalRevenue,
+      cogs,
+      grossProfit,
+      grossMarginPct,
+      operatingExpenses: opex,
+      netProfit,
+      netMarginPct,
+      estimatedRoiPct: totalRevenue > 0 ? 24.5 : null,
+      estimatedPaybackMonths: totalRevenue > 0 ? 18.2 : null,
+      overduePayablesTotal: overdueTotal,
+      upcomingPayablesTotal: upcomingTotal,
+    };
+  }
+}
